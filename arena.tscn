@@ -24,7 +24,7 @@ size = Vector2(133, 245)
 size = Vector2(142.64276, 249)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_35c7g"]
-size = Vector2(128, 337)
+size = Vector2(128, 302)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_n068f"]
 size = Vector2(128, 337)
@@ -511,12 +511,12 @@ position = Vector2(19, 5)
 position = Vector2(20, 3)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2" unique_id=1900360326]
-position = Vector2(210, 777.5)
+position = Vector2(210, 795)
 shape = SubResource("RectangleShape2D_35c7g")
 
 [node name="ColorRect" type="ColorRect" parent="StaticBody2D2/CollisionShape2D" unique_id=1559714705]
 offset_left = -56.0
-offset_top = -172.5
+offset_top = -151.0
 offset_right = 69.0
 offset_bottom = 161.5
 color = Color(0, 0.9843137, 0.9607843, 1)

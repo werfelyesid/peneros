@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BotData" format=3 uid="uid://cjbo235oovjwj"]
+
+[ext_resource type="Script" uid="uid://bx86hcdtd17tu" path="res://bot_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+nombre_bot = "Difícil 💀"
+descripcion = "550 vida | +10% vel | +salto | 15🪙 | +30🪙"
+vida = 550
+multiplicador_velocidad = 1.1
+multiplicador_salto = 1.15
+radio_caida = 0.0
+costo_monedas = 15
+recompensa_victoria = 30
+color_bot = Color(0.9, 0.4, 0.1, 1)
+agresividad = 0.7

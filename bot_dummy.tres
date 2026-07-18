@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BotData" format=3 uid="uid://fccmu1s6360q"]
+
+[ext_resource type="Script" uid="uid://bx86hcdtd17tu" path="res://bot_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+nombre_bot = "Dummy 🤖"
+descripcion = "5000 vida | Regenera 20/min | Revive | +5🪙"
+vida = 7000
+multiplicador_dano = 0.0
+multiplicador_salto = 0.0
+radio_caida = 0.0
+costo_monedas = -5
+recompensa_victoria = 0
+color_bot = Color(0.5, 0.5, 0.5, 1)
+se_mueve = false
+agresividad = 0.0

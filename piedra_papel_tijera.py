@@ -1,6 +1,7 @@
 import random
 
 opciones = ["piedra", "papel", "tijera"]
+
 puntos_jugador = 0
 puntos_pc = 0
 
@@ -31,9 +32,10 @@ while puntos_jugador < 3 and puntos_pc < 3:
         print("Perdiste esta ronda!\n")
 
 # Resultado final 
-print("=" * 30)
+print("🦖" * 30)
 if puntos_jugador == 3:
     print("¡Felicidades, ganaste")
 else:
-    print("lapc te gano muerde el polvo")
-print(f"Marcador final: Tú {puntos_jugador} - {puntos_pc} PC") 
+    print("la pc te gano muerde el polvo")
+print(f"Marcador final: Tú: {puntos_jugador} puntos\n - PC: {puntos_pc} puntos")
+print("✅✅✅✅👀👀👀👀👀👀👀👀👀👀👀👀🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖🦖")

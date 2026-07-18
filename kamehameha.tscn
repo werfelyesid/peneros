@@ -6,18 +6,19 @@
 size = Vector2(200, 40)
 
 [node name="Kamehameha" type="Area2D" unique_id=1326234011]
-scale = Vector2(1.6633068, 0.9656539)
+position = Vector2(72, 130)
+scale = Vector2(8.190072, 9.13168)
 script = ExtResource("1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2044678778]
-position = Vector2(29, -41)
+position = Vector2(-1.6115665, -1.0432243)
 shape = SubResource("RectangleShape2D_rayo")
 
 [node name="Rayo" type="ColorRect" parent="." unique_id=166213108]
-offset_left = -73.0
-offset_top = -63.0
-offset_right = 127.0
-offset_bottom = -23.0
+offset_left = -103.611565
+offset_top = -23.043224
+offset_right = 96.388435
+offset_bottom = 16.956776
 color = Color(0.3, 0.6, 1, 0.8)
 metadata/_edit_use_anchors_ = true
 

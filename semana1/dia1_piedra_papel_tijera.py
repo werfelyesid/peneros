@@ -35,33 +35,36 @@ AYUDA (solo si de verdad no sabes):
 import random
 
 opciones = ["piedra", "papel", "tijera"]
-puntos_jugador = 0
-puntos_computadora = 0
-jugador = input("Elije piedra, papel o  tijera\n: ").lower()
-print("el primero a 3 puntos gana\n")
+
+puntos_jugador=0
+puntos_computadora=0
+print("Elije piedra, papel o tijera ahora")
+print("ganas si llagas a 3 puntos\n\n")
+
 while puntos_jugador < 3 and puntos_computadora < 3:
-    print(f"marcador: tu {puntos_jugador} - {puntos_computadora} computadora")
-    jugador = input("Elije piedra, papel o  tijera\n: ").lower()
-    computadora = random.choice(opciones)
+    print(f"score🦖: jugador {puntos_jugador} puntos \n PC {puntos_computadora} puntos\n")
+    
+    eleccion = input("elije, piedra papel o tijera: ").lower()
+    if eleccion not in opciones:
+        print("escribe bien🦖🦖🦖")
+        continue
+    
+    pc = random.choice(opciones)
+    print(f"la pc elijio {pc}")
 
-while jugador not in opciones:
-    print("escribe bien:\n piedra papel o tijera")
-    exit()
-
-if jugador == computadora:
-    print("¡Empate!")
-elif (jugador == "piedra" and computadora == "tijera"):
-    print("¡Ganaste! 🎉")
-elif (jugador == "papel" and computadora == "piedra"):
-   print("¡Ganaste! 🎉")
-elif (jugador == "tijera" and computadora == "papel"):
-      print("¡Ganaste! 🎉") 
-else:
-    puntos_computadora += 1
-    print("¡Perdiste! 😢")
-
-print("=" * 30)
+    if eleccion == puntos_computadora:
+        print("!empate¡🦖🦖🦖")
+    elif(eleccion == "piedra" and pc == "tijera") or\
+        (eleccion == "papel" and pc == "piedra") or\
+        (eleccion == "tijera" and pc == "papel"):
+        print("ganaste , GOLL;LL🦖🦖🦖🦖🦖🦖🦖")
+        puntos_jugador += 1 
+    else:
+        puntos_computadora += 1
+        print("!perdiste gano la pppccc 🦖🦖🦖🦖🦖🦖")
+print("=🦖" * 30)
 if puntos_jugador == 3:
-    print("¡Felicidades, ganaste! 🎉")
+    print("you win🦖🦖🦖")
 else:
-    print("¡La computadora ganó! 😢")
+    print("perdiste ajjaja🦖🦖🦖")
+print(f"score jugador: {puntos_jugador}\n score pc {puntos_computadora}🦖🦖🦖🦖")

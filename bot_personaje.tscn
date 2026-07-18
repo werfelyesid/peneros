@@ -1,0 +1,192 @@
+[gd_scene format=3 uid="uid://pkmabp57xop3"]
+
+[ext_resource type="Script" uid="uid://bn3nax4ljlbop" path="res://simon.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://ckcqq2rwyh67c" path="res://head_circle.gd" id="2_head"]
+
+[sub_resource type="RectangleShape2D" id="ColisionBody"]
+size = Vector2(68, 180)
+
+[sub_resource type="RectangleShape2D" id="ColisionAttack"]
+size = Vector2(57, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qa3lq"]
+size = Vector2(54, 85)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_i73ax"]
+radius = 26.0
+height = 74.0
+
+[node name="BotPersonaje" type="CharacterBody2D" unique_id=2144464422]
+position = Vector2(960, 870)
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1714995235]
+position = Vector2(-2, -10)
+shape = SubResource("ColisionBody")
+
+[node name="TextEdit" type="TextEdit" parent="CollisionShape2D" unique_id=1093867625]
+modulate = Color(1, 0, 1, 1)
+self_modulate = Color(0, 0, 1, 1)
+offset_left = -41.0
+offset_top = -134.0
+offset_right = 31.0
+offset_bottom = -103.0
+text = "dummy"
+placeholder_text = "dummy"
+autowrap_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="CollisionShape2D" unique_id=1618587094]
+offset_left = -30.999996
+offset_top = -9.999996
+offset_right = -23.999996
+offset_bottom = 20.000004
+rotation = 2.7209682
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect" type="ColorRect" parent="CollisionShape2D/ColorRect" unique_id=1695736885]
+layout_mode = 0
+offset_left = -1.4882607
+offset_top = 27.816982
+offset_right = 19.996756
+offset_bottom = 49.126675
+color = Color(0.24115604, 0.24115604, 0.24115604, 1)
+
+[node name="ColorRect" type="ColorRect" parent="CollisionShape2D/ColorRect/ColorRect" unique_id=1842800951]
+layout_mode = 0
+offset_left = 20.394508
+offset_top = 5.8364377
+offset_right = 36.889412
+offset_bottom = 18.365734
+color = Color(0.26657522, 0.2665752, 0.2665752, 1)
+
+[node name="AttackArea" type="Area2D" parent="." unique_id=1687786251]
+position = Vector2(50, 0)
+monitoring = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" unique_id=1553810999]
+position = Vector2(15, 25)
+shape = SubResource("ColisionAttack")
+
+[node name="Cabeza" type="ColorRect" parent="." unique_id=7128050]
+offset_left = -32.0
+offset_top = -80.0
+offset_right = 32.0
+offset_bottom = -20.0
+color = Color(0.5, 0.5, 0.55, 1)
+
+[node name="Antena" type="ColorRect" parent="." unique_id=1809986747]
+offset_left = -18.0
+offset_top = -95.0
+offset_right = -14.0
+offset_bottom = -80.0
+color = Color(0.16971189, 0.16968629, 0.20055562, 1)
+
+[node name="LuzAntena" type="ColorRect" parent="." unique_id=1137795658]
+offset_left = -22.0
+offset_top = -99.0
+offset_right = -14.0
+offset_bottom = -95.0
+color = Color(1, 0.1, 0.1, 1)
+
+[node name="OjoIzq" type="ColorRect" parent="." unique_id=331609805]
+offset_left = -18.0
+offset_top = -65.0
+offset_right = -8.0
+offset_bottom = -55.0
+color = Color(0.1, 1, 0.2, 1)
+
+[node name="OjoDer" type="ColorRect" parent="." unique_id=281516280]
+offset_left = 8.0
+offset_top = -65.0
+offset_right = 18.0
+offset_bottom = -55.0
+color = Color(1, 0.011764706, 0.16862746, 1)
+
+[node name="Boca" type="ColorRect" parent="." unique_id=662022120]
+offset_left = -12.0
+offset_top = -40.0
+offset_right = 12.0
+offset_bottom = -35.0
+color = Color(0.25, 0.25, 0.3, 1)
+
+[node name="Cuerpo" type="ColorRect" parent="." unique_id=1666768567]
+offset_left = -25.0
+offset_top = -20.0
+offset_right = 25.0
+offset_bottom = 80.0
+color = Color(0.24856994, 0.24849492, 0.28349432, 1)
+
+[node name="PanelPecho" type="ColorRect" parent="." unique_id=1365749788]
+offset_left = -15.0
+offset_right = 15.0
+offset_bottom = 25.0
+color = Color(0.2, 0.2, 0.25, 1)
+
+[node name="LuzPecho" type="ColorRect" parent="." unique_id=507176690]
+offset_left = -3.0
+offset_top = 5.0
+offset_right = 3.0
+offset_bottom = 11.0
+color = Color(0.3, 0.8, 1, 1)
+
+[node name="BrazoIzq" type="ColorRect" parent="." unique_id=1634864529]
+offset_left = -32.0
+offset_top = -10.0
+offset_right = -25.0
+offset_bottom = 60.0
+color = Color(0.4, 0.4, 0.45, 1)
+
+[node name="BrazoDer" type="ColorRect" parent="." unique_id=54162787]
+offset_left = 25.0
+offset_top = -10.0
+offset_right = 32.0
+offset_bottom = 60.0
+color = Color(0.4, 0.4, 0.45, 1)
+
+[node name="PiernaIzq" type="ColorRect" parent="." unique_id=387120753]
+offset_left = -18.0
+offset_top = 80.0
+offset_right = -5.0
+offset_bottom = 160.0
+color = Color(0.16269886, 0.16266018, 0.19206119, 1)
+
+[node name="PiernaDer" type="ColorRect" parent="." unique_id=1632903276]
+offset_left = 5.0
+offset_top = 80.0
+offset_right = 18.0
+offset_bottom = 160.0
+color = Color(0.16269886, 0.16266018, 0.19206119, 1)
+
+[node name="PieIzq" type="ColorRect" parent="." unique_id=469018021]
+offset_left = -22.0
+offset_top = 155.0
+offset_right = -5.0
+offset_bottom = 165.0
+color = Color(0.3, 0.3, 0.35, 1)
+
+[node name="PieDer" type="ColorRect" parent="." unique_id=269806868]
+offset_left = 5.0
+offset_top = 155.0
+offset_right = 22.0
+offset_bottom = 165.0
+color = Color(0.3, 0.3, 0.35, 1)
+
+[node name="HeadVisual" type="Node2D" parent="." unique_id=1491023354]
+position = Vector2(0, -50)
+script = ExtResource("2_head")
+radio = 30.0
+color_relleno = Color(0.23715103, 0.2321094, 0.19596833, 0)
+
+[node name="SonidoGolpe" type="AudioStreamPlayer" parent="." unique_id=244808399]
+
+[node name="SonidoSalto" type="AudioStreamPlayer" parent="." unique_id=2080895588]
+
+[node name="SonidoCorrer" type="AudioStreamPlayer" parent="." unique_id=178899486]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=1378826003]
+position = Vector2(0, 123.5)
+shape = SubResource("RectangleShape2D_qa3lq")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="." unique_id=1041578847]
+position = Vector2(-58, -40)
+shape = SubResource("CapsuleShape2D_i73ax")

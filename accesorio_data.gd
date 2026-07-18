@@ -4,8 +4,8 @@ class_name AccesorioData extends Resource
 
 enum Tipo {
 	ESCUDO,    # Recibe la mitad de daño
-	BOTAS,     # Salta más alto
-	CAPA,      # Gravedad reducida (planear)
+	BOTAS,     # Corre más rápido
+	CAPA,      # Doble salto + vuelo (mantén salto) + descenso (flecha abajo)
 	PECHERA    # +20 vida máxima, -20% velocidad
 }
 

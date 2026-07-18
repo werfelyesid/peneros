@@ -7,10 +7,10 @@ const BOLA_FUEGO := preload("res://proyectil.tscn")
 @export var jump_velocity := -600
 @export var gravity := 600
 @export var attack_cooldown := 1.60
-@export var attack_damage := 20
+@export var attack_damage := 2
 @export var arma_actual: ArmaData
-@export var vida := 1000
-@export var vida_maxima := 1000
+@export var vida := 500
+@export var vida_maxima := 500
 @export var head_turn_degrees := 18.0
 @export var head_turn_speed := 14.0
 @export var cooldown_especial := 3
@@ -24,10 +24,17 @@ var usando_kamehameha := false
 var tiempo_inicio_carga := 0.0
 var facing_dir := 1.0
 var multiplicador_dano_recibido := 1.0
+
+# Habilidades de la capa
+var tiene_doble_salto := false
+var salto_aire_usado := false
+var permite_descenso_rapido := false
 @onready var sonido_golpe: AudioStreamPlayer = $SonidoGolpe
 @onready var sonido_salto: AudioStreamPlayer = get_node_or_null("SonidoSalto") as AudioStreamPlayer
 @onready var sonido_correr: AudioStreamPlayer = get_node_or_null("SonidoCorrer") as AudioStreamPlayer
 @onready var head_visual: Node2D = get_node_or_null("HeadVisual") as Node2D
+
+var monedero: Node
 
 signal vida_cambiada(vida_actual)
 
@@ -45,11 +52,14 @@ func aplicar_accesorio(acc: AccesorioData) -> void:
 	# Escudo: reduce daño recibido
 	multiplicador_dano_recibido = acc.multiplicador_dano_recibido
 
-	# Botas: modifica salto
+	# Botas: modifica velocidad
 	jump_velocity = int(jump_velocity * acc.multiplicador_salto)
 
-	# Capa: modifica gravedad
+	# Capa: gravedad + doble salto + descenso rápido
 	gravity = int(gravity * acc.multiplicador_gravedad)
+	if acc.tipo == AccesorioData.Tipo.CAPA:
+		tiene_doble_salto = true
+		permite_descenso_rapido = true
 
 	# Pecherón: +vida máxima, -velocidad
 	if acc.bonus_vida > 0:
@@ -84,12 +94,25 @@ func _physics_process(delta):
 	_actualizar_giro()
 
 	if is_on_floor():
+		salto_aire_usado = false
 		if Input.is_action_just_pressed("simon_jump"):
 			velocity.y = jump_velocity
 			if sonido_salto:
 				sonido_salto.play()
 	else:
 		velocity.y += gravity * delta
+		# Doble salto en el aire (capa)
+		if tiene_doble_salto and not salto_aire_usado and Input.is_action_just_pressed("simon_jump"):
+			velocity.y = jump_velocity
+			salto_aire_usado = true
+			if sonido_salto:
+				sonido_salto.play()
+		# Vuelo (capa): mantener salto para flotar/ascender
+		if tiene_doble_salto and Input.is_action_pressed("simon_jump"):
+			velocity.y = -80  # Flotar hacia arriba suavemente
+		# Descenso rápido (capa): flecha abajo para caer
+		elif permite_descenso_rapido and Input.is_action_pressed("ui_down"):
+			velocity.y += gravity * 3.0 * delta
 
 	# Sonido de correr
 	if sonido_correr:
@@ -181,37 +204,61 @@ func _try_apply_hit():
 					sonido_golpe.stop()
 				sonido_golpe.play()
 			return
-func _ataque_especial(tiempo_carga: float = 0.0) -> void:
+func _ataque_especial(_tiempo_carga: float = 0.0) -> void:
 	puede_especial = false
 	usando_kamehameha = true
+	
+	# Buff en boss fase 2: kamehameha gigante
+	var mult_largo := 1.0
+	var mult_ancho := 1.0
+	var arena := get_tree().get_first_node_in_group("arena")
+	if arena and arena.get("boss_fase_dos"):
+		mult_largo = 5.0
+		mult_ancho = 6.0
 
 	var rayo := Area2D.new()
 	rayo.name = "RayoKamehameha"
 
 	var colision := CollisionShape2D.new()
 	var forma := RectangleShape2D.new()
-	forma.size = Vector2(400, 40)
+	forma.size = Vector2(340 * mult_largo, 50 * mult_ancho)
 	colision.shape = forma
-	colision.position = Vector2(200 * facing_dir, 0)
+	colision.position = Vector2(250 * mult_largo, 60)
 	rayo.add_child(colision)
 
+	var borde := ColorRect.new()
+	borde.color = Color(0.8, 0.1, 0.5, 0.4)
+	borde.position = Vector2(0, 35)
+	borde.size = Vector2(400 * mult_largo, 50 * mult_ancho)
+	rayo.add_child(borde)
+
 	var visual := ColorRect.new()
-	visual.color = Color(1, 0.3, 0.6, 0.7)
-	visual.position = Vector2(0, -20)
-	visual.size = Vector2(400, 40)
+	visual.color = Color(1, 0.3, 0.6, 0.8)
+	visual.position = Vector2(0, 42)
+	visual.size = Vector2(400 * mult_largo, 36 * mult_ancho)
 	rayo.add_child(visual)
 
 	var nucleo := ColorRect.new()
 	nucleo.color = Color(1, 0.7, 0.9, 1)
-	nucleo.position = Vector2(0, -8)
-	nucleo.size = Vector2(400, 16)
-	visual.add_child(nucleo)
+	nucleo.position = Vector2(0, 50)
+	nucleo.size = Vector2(400 * mult_largo, 16 * mult_ancho)
+	rayo.add_child(nucleo)
+
+	var punta := ColorRect.new()
+	punta.color = Color(1, 1, 1, 1)
+	punta.position = Vector2(380 * mult_largo, 48)
+	punta.size = Vector2(20 * mult_largo, 20 * mult_ancho)
+	rayo.add_child(punta)
 
 	rayo.body_entered.connect(_on_rayo_golpea)
 	add_child(rayo)
 	rayo.scale.x = facing_dir
 
 	await get_tree().create_timer(3.0).timeout
+	
+	# Si hay choque de rayos, esperar a que termine
+	while arena and arena.get("rayo_clash_activo"):
+		await get_tree().create_timer(0.3).timeout
 
 	if is_instance_valid(rayo):
 		rayo.queue_free()
@@ -221,9 +268,16 @@ func _ataque_especial(tiempo_carga: float = 0.0) -> void:
 
 func _on_rayo_golpea(body: Node) -> void:
 	if body != self and body.has_method("recibir_dano"):
-		body.call("recibir_dano", 50)
+		var dano_base := 50
+		var arena := get_tree().get_first_node_in_group("arena")
+		if arena and arena.get("boss_fase_dos"):
+			dano_base = 100
+		body.call("recibir_dano", dano_base)
 
 func _ataque_bola() -> void:
+	# Verificar si compró la bola de fuego
+	if not _tiene_comprado("fuego"):
+		return
 	puede_bola = false
 	var bola := BOLA_FUEGO.instantiate()
 	bola.direccion = facing_dir
@@ -232,6 +286,13 @@ func _ataque_bola() -> void:
 	get_parent().add_child(bola)
 	await get_tree().create_timer(cooldown_bola).timeout
 	puede_bola = true
+
+func _tiene_comprado(item_id: String) -> bool:
+	if monedero == null:
+		monedero = get_node_or_null("/root/arena/Monedero")
+	if monedero == null:
+		return true  # Sin monedero, todo disponible
+	return monedero.tiene_comprado("simon", item_id)
 
 func recibir_dano(dano):
 	var dano_real := int(dano * multiplicador_dano_recibido)

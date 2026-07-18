@@ -25,19 +25,20 @@ offset_bottom = 1080.0
 color = Color(0.05, 0.05, 0.1, 0.9)
 
 [node name="Titulo" type="Label" parent="."]
-offset_left = 360.0
-offset_top = 200.0
-offset_right = 1560.0
-offset_bottom = 300.0
+offset_left = 100.0
+offset_top = 50.0
+offset_right = 1820.0
+offset_bottom = 750.0
 text = "Elige tu arma"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 40
+autowrap_mode = 2
+theme_override_font_sizes/font_size = 28
 
 [node name="VBoxCami" type="VBoxContainer" parent="."]
 offset_left = 100.0
-offset_top = 350.0
+offset_top = 780.0
 offset_right = 860.0
-offset_bottom = 500.0
+offset_bottom = 930.0
 
 [node name="LabelCami" type="Label" parent="VBoxCami"]
 text = "CAMI"
@@ -51,9 +52,9 @@ theme_override_font_sizes/font_size = 24
 
 [node name="VBoxSimon" type="VBoxContainer" parent="."]
 offset_left = 1060.0
-offset_top = 350.0
+offset_top = 780.0
 offset_right = 1820.0
-offset_bottom = 500.0
+offset_bottom = 930.0
 
 [node name="LabelSimon" type="Label" parent="VBoxSimon"]
 text = "SIMON"
