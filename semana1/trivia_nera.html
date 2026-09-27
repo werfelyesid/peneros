@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 TRIVIA ÑERA</title>
+    <style>
+        /* ═══════════════════════════════════════ */
+        /* 🎨 ESTILOS GENERALES                   */
+        /* ═══════════════════════════════════════ */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Fondo animado con partículas */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        /* Contenedor principal */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                        0 0 80px rgba(138, 43, 226, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-12px); }
+            40% { transform: translateX(12px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes fadeOutRight {
+            to { opacity: 0; transform: translateX(50px); }
+        }
+
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Encabezado */
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite;
+            text-shadow: none;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Barra de progreso */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6bcb77, #4d96ff);
+            border-radius: 4px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 0%;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+
+        /* Pregunta */
+        .question-area {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .question-text {
+            color: #ffffff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .question-number {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        /* Input */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .answer-input {
+            flex: 1;
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .answer-input:focus {
+            border-color: #ffd93d;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 20px rgba(255, 217, 61, 0.2);
+        }
+
+        .answer-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .submit-btn {
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+            color: #1a1a2e;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Feedback */
+        .feedback {
+            text-align: center;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            min-height: 44px;
+            transition: all 0.3s ease;
+        }
+
+        .feedback.correct {
+            background: rgba(107, 203, 119, 0.2);
+            color: #6bcb77;
+            animation: celebrate 0.5s ease;
+        }
+
+        .feedback.wrong {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            animation: shake 0.5s ease;
+        }
+
+        /* Puntaje */
+        .score-display {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .score-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #ffd93d;
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Pantalla de resultados */
+        .results {
+            display: none;
+            text-align: center;
+            animation: fadeInLeft 0.6s ease;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            animation: celebrate 1s ease infinite;
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ffd93d;
+            margin: 10px 0;
+        }
+
+        .result-percentage {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+        }
+
+        .result-rank {
+            font-size: 1.4rem;
+            font-weight: 700;
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        .rank-god { background: linear-gradient(135deg, #ffd700, #ffaa00); color: #1a1a2e; box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+        .rank-advanced { background: linear-gradient(135deg, #4d96ff, #6bcb77); color: #fff; box-shadow: 0 0 20px rgba(77, 150, 255, 0.3); }
+        .rank-training { background: linear-gradient(135deg, #ff6b6b, #ffd93d); color: #1a1a2e; }
+        .rank-baby { background: rgba(255, 255, 255, 0.1); color: rgba(255, 255, 255, 0.6); }
+
+        .retry-btn {
+            margin-top: 20px;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6bcb77, #4d96ff);
+            color: #fff;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(77, 150, 255, 0.5);
+        }
+
+        /* Ocultar elementos */
+        .hidden {
+            display: none;
+        }
+
+        /* ═══════════════════════════════════════ */
+        /* 📱 DISEÑO RESPONSIVO                   */
+        /* ═══════════════════════════════════════ */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px;
+                border-radius: 16px;
+                width: 95%;
+            }
+
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+            }
+
+            .submit-btn {
+                padding: 14px;
+                font-size: 1rem;
+            }
+
+            .answer-input {
+                padding: 12px 14px;
+                font-size: 1rem;
+            }
+
+            .score-value {
+                font-size: 1.4rem;
+            }
+
+            .result-icon {
+                font-size: 3.5rem;
+            }
+
+            .result-score {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .header h1 {
+                font-size: 1.3rem;
+            }
+
+            .question-text {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Partículas de fondo -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Contenedor principal -->
+    <div class="container" id="game-container">
+        <div class="header">
+            <h1>🧠 TRIVIA ÑERA 🧠</h1>
+        </div>
+
+        <!-- Área de juego -->
+        <div id="game-area">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Pregunta 1 de 10</div>
+
+            <div class="question-area">
+                <div class="question-number" id="question-number">PREGUNTA 1</div>
+                <div class="question-text" id="question-text"></div>
+
+                <div class="input-group">
+                    <input
+                        type="text"
+                        class="answer-input"
+                        id="answer-input"
+                        placeholder="Escribe tu respuesta..."
+                        autocomplete="off"
+                    >
+                    <button class="submit-btn" id="submit-btn">✔</button>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+            </div>
+
+            <div class="score-display">
+                <div class="score-item">
+                    <div class="score-value" id="correct-count">0</div>
+                    <div class="score-label">Aciertos</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-value" id="wrong-count">0</div>
+                    <div class="score-label">Fallos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla de resultados -->
+        <div class="results" id="results-area">
+            <div class="result-icon" id="result-icon"></div>
+            <div class="result-score" id="result-score"></div>
+            <div class="result-percentage" id="result-percentage"></div>
+            <div class="result-rank" id="result-rank"></div>
+            <br><br>
+            <button class="retry-btn" id="retry-btn">🔄 JUGAR OTRA VEZ</button>
+        </div>
+    </div>
+
+    <script>
+        /* ═══════════════════════════════════════ */
+        /* 🔊 GENERADOR DE SONIDOS                */
+        /* ═══════════════════════════════════════ */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioCtx();
+            }
+        }
+
+        function playBeep(frequency, duration, type = 'sine', volume = 0.15) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            gain.gain.setValueAtTime(volume, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function sfxCorrect() {
+            playBeep(523, 0.1, 'sine', 0.15);
+            setTimeout(() => playBeep(659, 0.1, 'sine', 0.15), 100);
+            setTimeout(() => playBeep(784, 0.2, 'sine', 0.2), 200);
+        }
+
+        function sfxWrong() {
+            playBeep(200, 0.2, 'sawtooth', 0.1);
+            setTimeout(() => playBeep(150, 0.3, 'sawtooth', 0.08), 200);
+        }
+
+        function sfxClick() {
+            playBeep(880, 0.05, 'sine', 0.08);
+        }
+
+        function sfxFinish() {
+            const notes = [523, 659, 784, 1047];
+            notes.forEach((freq, i) => {
+                setTimeout(() => playBeep(freq, 0.2, 'sine', 0.2), i * 150);
+            });
+        }
+
+        /* ═══════════════════════════════════════ */
+        /* 🎮 LÓGICA DEL JUEGO                    */
+        /* ═══════════════════════════════════════ */
+
+        // Las mismas preguntas de la trivia original
+        const preguntas = [
+            { pregunta: "¿Comida favorita del ñero: sushi o chicharrón?", respuesta: "chicharron" },
+            { pregunta: "¿Cuántas rayas tiene una prenda Adidas positiva para ñeros?", respuesta: "cuatro rayas" },
+            { pregunta: "¿El ñero compra su ropa en tiendas Piolin o en el mercado de las pulgas?", respuesta: "el mercado de las pulgas" },
+            { pregunta: "¿Dónde estudian los ñeros: en el SENA o en los Andes?", respuesta: "los andes" },
+            { pregunta: "¿El ñero costeño se caracteriza por: la empanada o la caribañola?", respuesta: "caribañola" },
+            { pregunta: "¿La carrera de los ñeros es: sociología o medicina?", respuesta: "medicina" },
+            { pregunta: "¿Verdadero o falso? El ser humano no nació para trabajar, eso es una imposición social.", respuesta: "verdadero" },
+            { pregunta: "¿Quién es la esposa de Infantino? (Pista: juega football)", respuesta: "messi" },
+            { pregunta: "¿Nombre de un perro Rottweiler de un ñero: Satán o Pastelito?", respuesta: "pastelito" },
+            { pregunta: "¿Cualquier ñero sabrá la respuesta a esta ecuación: ax² + bx + c = ?", respuesta: "0" }
+        ];
+
+        let preguntaActual = 0;
+        let puntos = 0;
+        let fallos = 0;
+
+        // Elementos del DOM
+        const questionText = document.getElementById('question-text');
+        const questionNumber = document.getElementById('question-number');
+        const answerInput = document.getElementById('answer-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const feedback = document.getElementById('feedback');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        const correctCount = document.getElementById('correct-count');
+        const wrongCount = document.getElementById('wrong-count');
+        const gameArea = document.getElementById('game-area');
+        const resultsArea = document.getElementById('results-area');
+        const resultIcon = document.getElementById('result-icon');
+        const resultScore = document.getElementById('result-score');
+        const resultPercentage = document.getElementById('result-percentage');
+        const resultRank = document.getElementById('result-rank');
+        const retryBtn = document.getElementById('retry-btn');
+        const gameContainer = document.getElementById('game-container');
+
+        function mostrarPregunta() {
+            if (preguntaActual >= preguntas.length) {
+                mostrarResultados();
+                return;
+            }
+
+            const q = preguntas[preguntaActual];
+            questionNumber.textContent = `PREGUNTA ${preguntaActual + 1}`;
+            questionText.textContent = q.pregunta;
+            answerInput.value = '';
+            answerInput.disabled = false;
+            submitBtn.disabled = false;
+            feedback.textContent = '';
+            feedback.className = 'feedback';
+            answerInput.focus();
+
+            // Actualizar progreso
+            const pct = (preguntaActual / preguntas.length) * 100;
+            progressFill.style.width = pct + '%';
+            progressText.textContent = `Pregunta ${preguntaActual + 1} de ${preguntas.length}`;
+
+            // Animación de entrada
+            gameContainer.style.animation = 'none';
+            gameContainer.offsetHeight; // trigger reflow
+            gameContainer.style.animation = 'fadeInLeft 0.4s ease';
+        }
+
+        function verificarRespuesta() {
+            initAudio();
+            sfxClick();
+
+            const respuestaJugador = answerInput.value.trim().toLowerCase();
+            const respuestaCorrecta = preguntas[preguntaActual].respuesta.toLowerCase();
+
+            if (respuestaJugador === '') {
+                feedback.textContent = '⚠️ ¡Escribe algo, ñero!';
+                feedback.className = 'feedback wrong';
+                gameContainer.style.animation = 'shake 0.4s ease';
+                setTimeout(() => gameContainer.style.animation = '', 400);
+                return;
+            }
+
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+
+            if (respuestaJugador === respuestaCorrecta) {
+                puntos++;
+                correctCount.textContent = puntos;
+                feedback.textContent = '✅ ¡Correcto, ñero! ¡Bien ahí!';
+                feedback.className = 'feedback correct';
+                sfxCorrect();
+            } else {
+                fallos++;
+                wrongCount.textContent = fallos;
+                feedback.innerHTML = `❌ ¡Mallll! La respuesta era: <strong>${preguntas[preguntaActual].respuesta}</strong>`;
+                feedback.className = 'feedback wrong';
+                gameContainer.style.animation = 'shake 0.5s ease';
+                setTimeout(() => gameContainer.style.animation = '', 500);
+                sfxWrong();
+            }
+
+            preguntaActual++;
+
+            // Pasar a siguiente pregunta tras 1.8 segundos
+            setTimeout(() => {
+                gameContainer.style.animation = 'fadeOutRight 0.3s ease';
+                setTimeout(() => {
+                    mostrarPregunta();
+                }, 300);
+            }, 1800);
+        }
+
+        function mostrarResultados() {
+            sfxFinish();
+            gameArea.classList.add('hidden');
+            resultsArea.classList.add('show');
+
+            const total = preguntas.length;
+            const porcentaje = Math.round((puntos * 100) / total);
+
+            resultScore.textContent = `${puntos} / ${total}`;
+            resultPercentage.textContent = `${porcentaje}%`;
+
+            // Rango
+            let icono, rango, claseRango;
+            if (porcentaje === 100) {
+                icono = '👑';
+                rango = '¡RANGO: DIOS ÑERO!';
+                claseRango = 'rank-god';
+            } else if (porcentaje >= 60) {
+                icono = '😎';
+                rango = '¡RANGO: ÑERO AVANZADO!';
+                claseRango = 'rank-advanced';
+            } else if (porcentaje >= 40) {
+                icono = '📚';
+                rango = 'RANGO: ÑERO EN ENTRENAMIENTO';
+                claseRango = 'rank-training';
+            } else {
+                icono = '👶';
+                rango = 'RANGO: ÑERO BEBÉ';
+                claseRango = 'rank-baby';
+            }
+
+            resultIcon.textContent = icono;
+            resultRank.textContent = rango;
+            resultRank.className = 'result-rank ' + claseRango;
+
+            progressFill.style.width = '100%';
+            progressText.textContent = '¡Completado!';
+
+            // Animación de entrada
+            resultsArea.style.animation = 'none';
+            resultsArea.offsetHeight;
+            resultsArea.style.animation = 'fadeInLeft 0.6s ease';
+        }
+
+        function reiniciarJuego() {
+            initAudio();
+            sfxClick();
+            preguntaActual = 0;
+            puntos = 0;
+            fallos = 0;
+            correctCount.textContent = '0';
+            wrongCount.textContent = '0';
+            progressFill.style.width = '0%';
+            feedback.textContent = '';
+            feedback.className = 'feedback';
+            answerInput.disabled = false;
+            submitBtn.disabled = false;
+            resultsArea.classList.remove('show');
+            gameArea.classList.remove('hidden');
+            gameContainer.style.animation = 'slideIn 0.5s ease';
+            mostrarPregunta();
+        }
+
+        // Event Listeners
+        submitBtn.addEventListener('click', verificarRespuesta);
+        answerInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                verificarRespuesta();
+            }
+        });
+        retryBtn.addEventListener('click', reiniciarJuego);
+
+        /* ═══════════════════════════════════════ */
+        /* ✨ PARTÍCULAS DE FONDO                 */
+        /* ═══════════════════════════════════════ */
+        function crearParticulas() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = Math.random() * 8 + 6 + 's';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        // Iniciar
+        crearParticulas();
+        mostrarPregunta();
+
+        // Activar audio en la primera interacción
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('keypress', initAudio, { once: true });
+    </script>
+</body>
+</html>

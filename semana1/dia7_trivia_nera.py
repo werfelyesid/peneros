@@ -151,3 +151,4 @@ print("\n" + "=" * 40)
 print("📊 RESULTADO FINAL 📊")
 print("=" * 40)
 mostrar_resultados(puntos, len(preguntas))
+

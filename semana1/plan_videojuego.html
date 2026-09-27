@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 PLAN ÑERO DASH — Desarrollo de Videojuego</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ═══════════════════════════════ */
+        /* 🎨 TEMA OSCURO GEOMÉTRICO      */
+        /* ═══════════════════════════════ */
+        :root {
+            --bg-deep: #0a0a1a;
+            --bg-card: rgba(255,255,255,0.04);
+            --border: rgba(255,255,255,0.08);
+            --gold: #ffd93d;
+            --blue: #4d96ff;
+            --green: #6bcb77;
+            --red: #ff6b6b;
+            --purple: #a855f7;
+            --text: #e0e0e0;
+            --text-dim: rgba(255,255,255,0.5);
+            --text-faint: rgba(255,255,255,0.3);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Fondo animado */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(77,150,255,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(168,85,247,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 80%, rgba(255,107,107,0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Grid geométrico de fondo */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.03;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 🏗️ ESTRUCTURA PRINCIPAL        */
+        /* ═══════════════════════════════ */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 50px 20px 40px;
+            position: relative;
+        }
+        .hero .icon {
+            font-size: 5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 900;
+            margin: 15px 0 10px;
+            background: linear-gradient(135deg, var(--red), var(--gold), var(--green), var(--blue), var(--purple));
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 6s ease infinite;
+            line-height: 1.2;
+        }
+        @keyframes gradientShift {
+            0%,100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        .hero .tagline {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 📋 SECCIONES                    */
+        /* ═══════════════════════════════ */
+        section {
+            margin: 30px 0;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,217,61,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .section-title .emoji {
+            font-size: 1.8rem;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 🃏 TARJETAS                     */
+        /* ═══════════════════════════════ */
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin: 12px 0;
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: rgba(255,255,255,0.18);
+            background: rgba(255,255,255,0.06);
+            transform: translateX(4px);
+        }
+
+        /* Tabla de resumen */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .summary-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        .summary-table td:first-child {
+            font-weight: 700;
+            color: var(--blue);
+            white-space: nowrap;
+            width: 180px;
+        }
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .badge.gold { background: rgba(255,217,61,0.2); color: var(--gold); }
+        .badge.blue { background: rgba(77,150,255,0.2); color: var(--blue); }
+        .badge.green { background: rgba(107,203,119,0.2); color: var(--green); }
+        .badge.red { background: rgba(255,107,107,0.2); color: var(--red); }
+        .badge.purple { background: rgba(168,85,247,0.2); color: var(--purple); }
+
+        /* ═══════════════════════════════ */
+        /* 📐 ETAPAS (ACORDEÓN)            */
+        /* ═══════════════════════════════ */
+        .stage {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin: 12px 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .stage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 22px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .stage-header:hover {
+            background: rgba(255,255,255,0.03);
+        }
+        .stage-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 900;
+            font-size: 1.8rem;
+            color: var(--gold);
+            min-width: 45px;
+        }
+        .stage-info {
+            flex: 1;
+            min-width: 150px;
+        }
+        .stage-info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .stage-info .meta {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+        .stage-duration {
+            text-align: right;
+            font-weight: 700;
+            color: var(--blue);
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        .stage-arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+            color: var(--text-dim);
+        }
+        .stage.open .stage-arrow {
+            transform: rotate(180deg);
+        }
+        .stage-body {
+            display: none;
+            padding: 0 22px 20px;
+            border-top: 1px solid var(--border);
+            animation: fadeDown 0.3s ease;
+        }
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stage.open .stage-body {
+            display: block;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 6px 0 6px 28px;
+            position: relative;
+            color: var(--text-dim);
+            font-size: 0.93rem;
+        }
+        .checklist li::before {
+            content: '☐';
+            position: absolute;
+            left: 0;
+            color: var(--text-faint);
+            font-size: 1rem;
+        }
+        .checklist li.done::before {
+            content: '✅';
+        }
+        .checklist li strong {
+            color: var(--text);
+        }
+
+        /* Sub-sección en etapa */
+        .stage-sub {
+            margin: 12px 0;
+            padding-left: 10px;
+            border-left: 2px solid rgba(255,255,255,0.08);
+        }
+        .stage-sub h5 {
+            color: var(--purple);
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Badges inline */
+        .stage-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 📊 PROGRESS BAR                 */
+        /* ═══════════════════════════════ */
+        .progress-overall {
+            margin: 20px 0;
+        }
+        .progress-overall .label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        .progress-overall .bar {
+            height: 8px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-overall .fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue), var(--purple));
+            border-radius: 4px;
+            transition: width 1s ease;
+            width: 0%;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 📅 TIMELINE                    */
+        /* ═══════════════════════════════ */
+        .timeline {
+            position: relative;
+            padding: 10px 0;
+            overflow-x: auto;
+        }
+        .timeline-inner {
+            display: flex;
+            gap: 3px;
+            min-width: 760px;
+            padding: 10px 0;
+        }
+        .timeline-month {
+            text-align: center;
+            flex: 1;
+            min-width: 58px;
+        }
+        .timeline-month .label {
+            font-size: 0.65rem;
+            color: var(--text-faint);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+        .timeline-month .cell {
+            height: 40px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        .cell.stage-0 { background: rgba(255,255,255,0.08); }
+        .cell.stage-1 { background: var(--blue); opacity: 0.7; }
+        .cell.stage-2 { background: var(--purple); opacity: 0.7; }
+        .cell.stage-3 { background: var(--gold); opacity: 0.7; }
+        .cell.stage-4 { background: var(--green); opacity: 0.7; }
+        .cell.stage-5 { background: var(--red); opacity: 0.7; }
+        .cell.stage-6 { background: #ec4899; opacity: 0.7; }
+        .cell.stage-7 { background: #14b8a6; opacity: 0.7; }
+        .cell.stage-8 { background: var(--gold); opacity: 0.5; }
+        .cell.stage-9 { background: var(--blue); opacity: 0.5; }
+        .cell.stage-10 { background: var(--green); opacity: 0.8; }
+        .cell.stage-11 { background: rgba(255,255,255,0.05); }
+        .cell:hover { opacity: 1 !important; transform: scaleY(1.3); }
+
+        .timeline-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        .timeline-legend span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .timeline-legend .swatch {
+            width: 12px; height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 💸 PRESUPUESTO                  */
+        /* ═══════════════════════════════ */
+        .budget-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .budget-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .budget-table tr:last-child td {
+            border-bottom: none;
+            font-weight: 900;
+            color: var(--green);
+            font-size: 1.1rem;
+        }
+        .budget-table td:last-child {
+            text-align: right;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 🎓 TABLA APRENDIZAJE            */
+        /* ═══════════════════════════════ */
+        .learn-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .learn-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .learn-table td:first-child {
+            font-weight: 700;
+            color: var(--gold);
+            white-space: nowrap;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
+        .learn-table td:last-child {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
+
+        /* ═══════════════════════════════ */
+        /* 🦶 FOOTER                       */
+        /* ═══════════════════════════════ */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-faint);
+            font-size: 0.85rem;
+        }
+
+        /* ═══════════════════════════════ */
+        /* 📱 RESPONSIVE                  */
+        /* ═══════════════════════════════ */
+        @media (max-width: 600px) {
+            .container { padding: 15px 10px 40px; }
+            .hero { padding: 30px 10px 25px; }
+            .hero .icon { font-size: 3.5rem; }
+            .card { padding: 15px 16px; }
+            .summary-table td:first-child { width: 130px; font-size: 0.85rem; }
+            .stage-header { padding: 14px 16px; }
+            .stage-body { padding: 0 16px 16px; }
+            .stage-num { font-size: 1.3rem; min-width: 35px; }
+            .timeline-inner { min-width: 760px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="grid-bg"></div>
+
+    <div class="container">
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 🦸 HERO                        -->
+        <!-- ═══════════════════════════════ -->
+        <header class="hero">
+            <div class="icon">🟪</div>
+            <h1>PLAN DE DESARROLLO<br>"ÑERO DASH"</h1>
+            <p class="tagline">Geometry-Dash-like &bull; Mobile-First &bull; Godot Engine</p>
+        </header>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 📋 RESUMEN                     -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">📋</span> Resumen del proyecto</div>
+            <div class="card">
+                <table class="summary-table">
+                    <tr><td>🎮 Mecánica</td><td>One-tap rítmico (auto-scroll, tap para saltar)</td></tr>
+                    <tr><td>🎨 Estilo</td><td>Geométrico con variedad de formas (sierras, naves, portales)</td></tr>
+                    <tr><td>👥 Equipo</td><td>Yesid + Camilo (papá e hijo)</td></tr>
+                    <tr><td>⏱️ Tiempo</td><td>6-12 meses (aprendizaje, sin prisa)</td></tr>
+                    <tr><td>🎵 Música</td><td>Libre de derechos (OpenGameArt, Incompetech, Pixabay)</td></tr>
+                    <tr><td>💰 Monetización</td><td>Gratis + AdMob (anuncios no intrusivos)</td></tr>
+                    <tr><td>🌐 Multijugador</td><td>No en tiempo real. Sí: creador de niveles + compartir online</td></tr>
+                    <tr><td>📱 Plataformas</td><td>Primero Android, luego PC (Windows/Linux)</td></tr>
+                    <tr><td>🛠️ Motor</td><td><span class="badge blue">Godot Engine 4.x</span></td></tr>
+                    <tr><td>🤖 Presupuesto IA</td><td><span class="badge gold">~$50 USD</span> (DeepSeek API)</td></tr>
+                    <tr><td>🖥️ Servidor</td><td>Minipc Yesid (backend de niveles)</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 🖥️ RECURSOS TÉCNICOS           -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">🖥️</span> Recursos técnicos</div>
+            <div class="card">
+                <table class="summary-table">
+                    <tr><td>PC principal</td><td>32GB RAM, RTX 4060, 1TB SSD → Desarrollo, testing PC, builds</td></tr>
+                    <tr><td>Portátil</td><td>Core i5, 32GB RAM, sin GPU → Desarrollo móvil, docs, código</td></tr>
+                    <tr><td>Minipc servidor</td><td>Backend niveles online <span class="badge green">Yesid</span></td></tr>
+                    <tr><td>DeepSeek API</td><td>~$50 USD → Assets placeholder, debug, código boilerplate</td></tr>
+                    <tr><td>Godot 4.x</td><td><span class="badge green">Gratis</span> → Motor del juego</td></tr>
+                    <tr><td>GIMP / Inkscape</td><td><span class="badge green">Gratis</span> → Crear y editar sprites geométricos</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 📊 PROGRESO GENERAL            -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">📊</span> Progreso general</div>
+            <div class="card">
+                <div class="progress-overall">
+                    <div class="label"><span>Progreso total estimado</span><span>0% — Iniciando</span></div>
+                    <div class="bar"><div class="fill" style="width: 0%"></div></div>
+                </div>
+                <p style="color:var(--text-faint);font-size:0.85rem;margin-top:8px;">
+                    ✅ Arrancaremos con <strong>ETAPA 0: Fundación</strong> — configuración del proyecto Godot.
+                </p>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 📅 TIMELINE                    -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">📅</span> Cronograma visual (12 meses)</div>
+            <div class="card">
+                <div class="timeline">
+                    <div class="timeline-inner">
+                        <div class="timeline-month"><div class="label">MES 1</div><div class="cell stage-0"></div><div class="cell stage-1"></div></div>
+                        <div class="timeline-month"><div class="label">MES 2</div><div class="cell stage-1"></div><div class="cell stage-1"></div><div class="cell stage-2"></div></div>
+                        <div class="timeline-month"><div class="label">MES 3</div><div class="cell stage-2"></div><div class="cell stage-3"></div><div class="cell stage-3"></div></div>
+                        <div class="timeline-month"><div class="label">MES 4</div><div class="cell stage-4"></div><div class="cell stage-4"></div><div class="cell stage-4"></div></div>
+                        <div class="timeline-month"><div class="label">MES 5</div><div class="cell stage-4"></div><div class="cell stage-4"></div><div class="cell stage-5"></div></div>
+                        <div class="timeline-month"><div class="label">MES 6</div><div class="cell stage-5"></div><div class="cell stage-6"></div><div class="cell stage-6"></div></div>
+                        <div class="timeline-month"><div class="label">MES 7</div><div class="cell stage-6"></div><div class="cell stage-7"></div><div class="cell stage-7"></div></div>
+                        <div class="timeline-month"><div class="label">MES 8</div><div class="cell stage-7"></div><div class="cell stage-8"></div><div class="cell stage-8"></div></div>
+                        <div class="timeline-month"><div class="label">MES 9</div><div class="cell stage-9"></div><div class="cell stage-9"></div><div class="cell stage-10"></div></div>
+                        <div class="timeline-month"><div class="label">MES 10</div><div class="cell stage-10"></div><div class="cell stage-10"></div><div class="cell stage-10"></div></div>
+                        <div class="timeline-month"><div class="label">MES 11</div><div class="cell stage-10"></div><div class="cell stage-11"></div><div class="cell stage-11"></div></div>
+                        <div class="timeline-month"><div class="label">MES 12</div><div class="cell stage-11"></div><div class="cell stage-11"></div><div class="cell stage-11"></div></div>
+                    </div>
+                </div>
+                <div class="timeline-legend">
+                    <span><span class="swatch" style="background:rgba(255,255,255,0.2)"></span> Fundación</span>
+                    <span><span class="swatch" style="background:var(--blue)"></span> Prototipo</span>
+                    <span><span class="swatch" style="background:var(--purple)"></span> Obstáculos</span>
+                    <span><span class="swatch" style="background:var(--gold)"></span> Música</span>
+                    <span><span class="swatch" style="background:var(--green)"></span> Niveles</span>
+                    <span><span class="swatch" style="background:var(--red)"></span> UI/UX</span>
+                    <span><span class="swatch" style="background:#ec4899"></span> Creador</span>
+                    <span><span class="swatch" style="background:#14b8a6"></span> Online</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 🗺️ ETAPAS (ACORDEÓN)           -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">🗺️</span> Etapas de desarrollo</div>
+            <p style="color:var(--text-faint);font-size:0.85rem;margin-bottom:12px;">👆 Haz clic en cada etapa para expandir los detalles.</p>
+
+            <!-- ETAPA 0 -->
+            <div class="stage open" id="stage0">
+                <div class="stage-header" onclick="toggleStage('stage0')">
+                    <div class="stage-num">0</div>
+                    <div class="stage-info">
+                        <h3>🏗️ FUNDACIÓN</h3>
+                        <div class="meta">Configuración del proyecto y planificación</div>
+                    </div>
+                    <div class="stage-duration">1-2 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <div class="stage-sub">
+                        <h5>⚙️ Configuración del proyecto</h5>
+                        <ul class="checklist">
+                            <li>Crear proyecto Godot 4.x vacío (<code>ñero_dash/</code>)</li>
+                            <li>Crear estructura de carpetas completa (assets, scenes, scripts, shaders)</li>
+                            <li>Configurar Git + GitHub</li>
+                            <li>Configurar export para Android (SDK, keystore)</li>
+                            <li>Configurar Godot para mobile (viewport 720×1280, escalado)</li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>🔍 Investigación y referencia</h5>
+                        <ul class="checklist">
+                            <li>Jugar Geometry Dash 1 hora analizando mecánicas</li>
+                            <li>Documentar hallazgos en <code>docs/referencia_gd.md</code></li>
+                            <li>Buscar 5 canciones libres de derechos</li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>📝 Game Design Document (GDD)</h5>
+                        <ul class="checklist">
+                            <li>Escribir <code>docs/GDD.md</code> con historia, mecánicas, obstáculos, progresión</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 1 -->
+            <div class="stage" id="stage1">
+                <div class="stage-header" onclick="toggleStage('stage1')">
+                    <div class="stage-num">1</div>
+                    <div class="stage-info">
+                        <h3>🔧 PROTOTIPO JUGABLE</h3>
+                        <div class="meta">Un cubo que avanza, salta y muere</div>
+                    </div>
+                    <div class="stage-duration">4-6 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <div class="stage-sub">
+                        <h5>👤 Personaje (Sem 1-2)</h5>
+                        <ul class="checklist">
+                            <li>Crear <code>player.gd</code>: auto-scroll, salto con tap, gravedad</li>
+                            <li>Sprite del cubo (32×32, color vibrante)</li>
+                            <li>Rotación del cubo al saltar (efecto visual)</li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>🌍 Suelo y cámara (Sem 1-2)</h5>
+                        <ul class="checklist">
+                            <li>Suelo infinito con TileMap</li>
+                            <li>Cámara que sigue al jugador (Camera2D)</li>
+                            <li>Fondo con gradiente</li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>🚧 Primer obstáculo (Sem 2-3)</h5>
+                        <ul class="checklist">
+                            <li>Pincho triangular con Area2D</li>
+                            <li>Sistema de spawn con <code>level_manager.gd</code></li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>💀 Muerte y reinicio (Sem 3-4)</h5>
+                        <ul class="checklist">
+                            <li>Explosión geométrica al morir (partículas)</li>
+                            <li>Botón "Reintentar" tras 0.5s</li>
+                            <li>Reinicio instantáneo sin loading</li>
+                        </ul>
+                    </div>
+                    <p style="margin-top:12px;"><strong>🏁 HITO 1:</strong> El juego es jugable. Cubo salta, muere, reinicia. ✅</p>
+                </div>
+            </div>
+
+            <!-- ETAPA 2 -->
+            <div class="stage" id="stage2">
+                <div class="stage-header" onclick="toggleStage('stage2')">
+                    <div class="stage-num">2</div>
+                    <div class="stage-info">
+                        <h3>🚧 VARIEDAD DE OBSTÁCULOS</h3>
+                        <div class="meta">8+ tipos de obstáculos diferentes</div>
+                    </div>
+                    <div class="stage-duration">3-4 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <div class="stage-sub">
+                        <h5>Básicos</h5>
+                        <ul class="checklist">
+                            <li>Pincho simple (✅ ya existe)</li>
+                            <li>Pincho doble, pincho de techo, bloque flotante</li>
+                            <li>Sierra circular (gira, se mueve en patrón)</li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>Avanzados</h5>
+                        <ul class="checklist">
+                            <li>Portal de gravedad, plataforma móvil</li>
+                            <li>Láser intermitente, túnel estrecho</li>
+                            <li>Nave / modo vuelo</li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>🏭 Sistema modular</h5>
+                        <ul class="checklist">
+                            <li>Herencia de <code>obstacle_base.gd</code></li>
+                            <li>Factory pattern para crear obstáculos desde datos</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 3 -->
+            <div class="stage" id="stage3">
+                <div class="stage-header" onclick="toggleStage('stage3')">
+                    <div class="stage-num">3</div>
+                    <div class="stage-info">
+                        <h3>🎵 SINCRONIZACIÓN MUSICAL</h3>
+                        <div class="meta">Obstáculos al ritmo de la música</div>
+                    </div>
+                    <div class="stage-duration">3-4 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <ul class="checklist">
+                        <li>Detectar BPM de cada canción</li>
+                        <li>Sistema de beats: obstáculos colocados en beats específicos</li>
+                        <li>Editor de timeline con <code>song_data.tres</code></li>
+                        <li>Visualización de waveform</li>
+                        <li>Fondo palpita con el beat, colores cambian en drops</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ETAPA 4 -->
+            <div class="stage" id="stage4">
+                <div class="stage-header" onclick="toggleStage('stage4')">
+                    <div class="stage-num">4</div>
+                    <div class="stage-info">
+                        <h3>🎯 5 NIVELES OFICIALES</h3>
+                        <div class="meta">Dificultad creciente, skins desbloqueables</div>
+                    </div>
+                    <div class="stage-duration">5-7 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <div class="card" style="background:rgba(0,0,0,0.2);">
+                        <table class="summary-table">
+                            <tr><td>⭐ 1. "Primer Salto"</td><td>Fácil · 60s · Pinchos básicos</td></tr>
+                            <tr><td>⭐⭐ 2. "Sierras"</td><td>Medio · 75s · Sierras + bloques</td></tr>
+                            <tr><td>⭐⭐⭐ 3. "Gravedad Loca"</td><td>Difícil · 90s · Portales de gravedad</td></tr>
+                            <tr><td>⭐⭐⭐⭐ 4. "Infierno Geométrico"</td><td>Muy difícil · 90s · Láseres + túneles</td></tr>
+                            <tr><td>⭐⭐⭐⭐⭐ 5. "Dimensión Ñera"</td><td>Extremo · 120s · TODO combinado</td></tr>
+                        </table>
+                    </div>
+                    <p style="margin-top:10px;"><strong>Skins:</strong> Cubo normal → Dorado (10⭐) → Arcoíris (20⭐) → Nave geométrica (30⭐)</p>
+                </div>
+            </div>
+
+            <!-- ETAPA 5 -->
+            <div class="stage" id="stage5">
+                <div class="stage-header" onclick="toggleStage('stage5')">
+                    <div class="stage-num">5</div>
+                    <div class="stage-info">
+                        <h3>🎨 UI/UX COMPLETA</h3>
+                        <div class="meta">Interfaz completa y pulida</div>
+                    </div>
+                    <div class="stage-duration">3-4 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <ul class="checklist">
+                        <li>Splash screen, menú principal animado, selector de niveles</li>
+                        <li>HUD minimalista, pausa, game over, victoria</li>
+                        <li>Tienda de skins</li>
+                        <li>Transiciones (fundido, animaciones de entrada/salida)</li>
+                        <li>Ajustes: volumen, vibración, calidad gráfica</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ETAPA 6 -->
+            <div class="stage" id="stage6">
+                <div class="stage-header" onclick="toggleStage('stage6')">
+                    <div class="stage-num">6</div>
+                    <div class="stage-info">
+                        <h3>🏗️ CREADOR DE NIVELES</h3>
+                        <div class="meta">Editor visual dentro del juego</div>
+                    </div>
+                    <div class="stage-duration">5-7 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <ul class="checklist">
+                        <li>Grid al ritmo de la música, paleta de obstáculos drag & drop</li>
+                        <li>Vista previa en tiempo real, timeline con waveform</li>
+                        <li>Botones: Play, Pause, Stop, Guardar, Cargar</li>
+                        <li>Guardar como <code>.nivel</code> (JSON)</li>
+                        <li>Validación automática: ¿es completable? ¿dificultad estimada?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ETAPA 7 -->
+            <div class="stage" id="stage7">
+                <div class="stage-header" onclick="toggleStage('stage7')">
+                    <div class="stage-num">7</div>
+                    <div class="stage-info">
+                        <h3>🌐 ONLINE — COMPARTIR NIVELES</h3>
+                        <div class="meta">API REST + comunidad de niveles</div>
+                    </div>
+                    <div class="stage-duration">5-7 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <div class="stage-sub">
+                        <h5>🖥️ Backend (Minipc Yesid)</h5>
+                        <ul class="checklist">
+                            <li>API REST con Python (Flask/FastAPI)</li>
+                            <li>Endpoints: subir, listar, descargar, votar, buscar</li>
+                            <li>Base de datos SQLite</li>
+                            <li>Rate limiting, validación, moderación básica</li>
+                        </ul>
+                    </div>
+                    <div class="stage-sub">
+                        <h5>📱 Cliente (Godot)</h5>
+                        <ul class="checklist">
+                            <li>HTTPRequest para API</li>
+                            <li>Pantalla "Niveles de la comunidad" con filtros y búsqueda</li>
+                            <li>Cache local de niveles descargados</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ETAPA 8 -->
+            <div class="stage" id="stage8">
+                <div class="stage-header" onclick="toggleStage('stage8')">
+                    <div class="stage-num">8</div>
+                    <div class="stage-info">
+                        <h3>💰 MONETIZACIÓN</h3>
+                        <div class="meta">Anuncios no intrusivos</div>
+                    </div>
+                    <div class="stage-duration">2-3 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <ul class="checklist">
+                        <li>Plugin Godot para AdMob (Android)</li>
+                        <li>Anuncio intersticial cada 5 muertes (NO cada muerte)</li>
+                        <li>Banner pequeño en menú principal (no en juego)</li>
+                        <li>Opción "Quitar anuncios" ($1.99 USD)</li>
+                        <li>Anuncio recompensado: 5 estrellas extra</li>
+                        <li>Integrar Godot IAP plugin</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ETAPA 9 -->
+            <div class="stage" id="stage9">
+                <div class="stage-header" onclick="toggleStage('stage9')">
+                    <div class="stage-num">9</div>
+                    <div class="stage-info">
+                        <h3>✨ POLISH Y OPTIMIZACIÓN</h3>
+                        <div class="meta">Juego pulido a 60 FPS</div>
+                    </div>
+                    <div class="stage-duration">3-4 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <ul class="checklist">
+                        <li>Partículas, shaders para fondos, trail del cubo</li>
+                        <li>Screen shake, slow motion al completar nivel</li>
+                        <li>10+ efectos de sonido, crossfade musical</li>
+                        <li>Object pooling, texturas comprimidas (ETC2)</li>
+                        <li>60 FPS en dispositivos gama media</li>
+                        <li>Modo daltonismo, texto ajustable, zona de tap configurable</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ETAPA 10 -->
+            <div class="stage" id="stage10">
+                <div class="stage-header" onclick="toggleStage('stage10')">
+                    <div class="stage-num">10</div>
+                    <div class="stage-info">
+                        <h3>🚀 TESTING Y LANZAMIENTO</h3>
+                        <div class="meta">¡Publicado en Play Store!</div>
+                    </div>
+                    <div class="stage-duration">4-6 semanas</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <ul class="checklist">
+                        <li>Test en 3+ dispositivos Android distintos</li>
+                        <li>Google Play Internal Testing (5-10 amigos)</li>
+                        <li>2-3 ciclos de arreglos con feedback</li>
+                        <li>Ficha en Google Play Console, screenshots, video</li>
+                        <li>Descripción en español e inglés</li>
+                        <li>Publicar en producción 🎉</li>
+                        <li>PC: Exportar .exe y Linux, publicar en itch.io</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ETAPA 11 -->
+            <div class="stage" id="stage11">
+                <div class="stage-header" onclick="toggleStage('stage11')">
+                    <div class="stage-num">11</div>
+                    <div class="stage-info">
+                        <h3>🔄 POST-LANZAMIENTO</h3>
+                        <div class="meta">Soporte continuo y eventos</div>
+                    </div>
+                    <div class="stage-duration">Continuo</div>
+                    <div class="stage-arrow">▼</div>
+                </div>
+                <div class="stage-body">
+                    <ul class="checklist">
+                        <li>Nuevos niveles oficiales cada 2-4 semanas</li>
+                        <li>"Nivel de la semana" (destacado de la comunidad)</li>
+                        <li>Eventos temáticos (Halloween, Navidad)</li>
+                        <li>Analíticas básicas, responder reviews en Play Store</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 💸 PRESUPUESTO                 -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">💸</span> Presupuesto estimado</div>
+            <div class="card">
+                <table class="budget-table">
+                    <tr><td>DeepSeek API (12 meses, uso moderado)</td><td>~$50 USD</td></tr>
+                    <tr><td>Google Play Console (pago único)</td><td>$25 USD</td></tr>
+                    <tr><td>AdMob</td><td>Gratis</td></tr>
+                    <tr><td>Godot Engine</td><td>Gratis</td></tr>
+                    <tr><td>Sonidos / Música</td><td>Gratis (libre de derechos)</td></tr>
+                    <tr><td>Servidor (minipc propio)</td><td>Solo electricidad</td></tr>
+                    <tr><td><strong>TOTAL</strong></td><td><strong>~$75 USD</strong></td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 🎓 QUÉ APRENDE CAMILO          -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">🎓</span> Qué aprende Camilo en cada etapa</div>
+            <div class="card">
+                <table class="learn-table">
+                    <tr><td>Etapa 0</td><td>Organización de proyectos, Git, estructura de archivos</td></tr>
+                    <tr><td>Etapa 1</td><td>Física 2D, inputs, colisiones, game loop</td></tr>
+                    <tr><td>Etapa 2</td><td>Herencia, composición, patrones de diseño</td></tr>
+                    <tr><td>Etapa 3</td><td>Audio, timing, BPM, sincronización</td></tr>
+                    <tr><td>Etapa 4</td><td>Diseño de niveles, balance, progresión</td></tr>
+                    <tr><td>Etapa 5</td><td>UI/UX, animaciones, transiciones</td></tr>
+                    <tr><td>Etapa 6</td><td>Herramientas, editor visual, UX de creadores</td></tr>
+                    <tr><td>Etapa 7</td><td>HTTP, APIs REST, bases de datos, backend</td></tr>
+                    <tr><td>Etapa 8</td><td>Monetización, IAP, AdMob, modelo de negocio</td></tr>
+                    <tr><td>Etapa 9</td><td>Shaders, partículas, optimización, profiling</td></tr>
+                    <tr><td>Etapa 10</td><td>Testing, publicación, marketing básico</td></tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════ -->
+        <!-- 📝 NOTAS                       -->
+        <!-- ═══════════════════════════════ -->
+        <section>
+            <div class="section-title"><span class="emoji">📝</span> Notas importantes</div>
+            <div class="card">
+                <ol style="padding-left:20px;color:var(--text-dim);">
+                    <li style="margin:6px 0;"><strong style="color:var(--text);">Cada etapa produce algo jugable.</strong> No se avanza hasta que funcione.</li>
+                    <li style="margin:6px 0;"><strong style="color:var(--text);">Camilo escribe ≥60% del código.</strong> Yesid guía, corrige y explica.</li>
+                    <li style="margin:6px 0;"><strong style="color:var(--text);">La IA (DeepSeek) se usa para:</strong> generar placeholders, ayudar con bugs difíciles, sugerir estructuras. <span style="color:var(--red);">NUNCA para escribir el código final.</span></li>
+                    <li style="margin:6px 0;"><strong style="color:var(--text);">Iterar rápido:</strong> mejor un prototipo feo que funcione que un diseño perfecto en papel.</li>
+                    <li style="margin:6px 0;"><strong style="color:var(--text);">Divertirse:</strong> si Camilo se frustra, cambiar a tarea más fácil o tomar descanso.</li>
+                </ol>
+            </div>
+        </section>
+
+        <footer>
+            <p>🟪 Ñero Dash · Plan creado el 2026-07-19 · Yesid & Camilo 🟪</p>
+            <p style="margin-top:6px;">Se actualizará según avance el proyecto.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        /* ═══════════════════════════════ */
+        /* 🔽 ACORDEÓN DE ETAPAS          */
+        /* ═══════════════════════════════ */
+        function toggleStage(stageId) {
+            const stage = document.getElementById(stageId);
+            stage.classList.toggle('open');
+        }
+
+        // Abrir ETAPA 0 por defecto (ya está con clase "open" en HTML)
+
+        // Animación de progreso al hacer scroll
+        const progressFill = document.querySelector('.progress-overall .fill');
+        if (progressFill) {
+            setTimeout(() => {
+                progressFill.style.width = '0%';
+            }, 300);
+        }
+
+        // Sonido sutil al expandir etapas (opcional)
+        document.querySelectorAll('.stage-header').forEach(header => {
+            header.addEventListener('click', () => {
+                // Pequeño feedback táctil/visual
+                header.style.transform = 'scale(0.99)';
+                setTimeout(() => header.style.transform = '', 100);
+            });
+        });
+    </script>
+</body>
+</html>

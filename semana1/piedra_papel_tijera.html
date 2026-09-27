@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🥊 PIEDRA, PAPEL O TIJERA ÑERA</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+
+        /* Partículas */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            background: rgba(255,255,255,0.12);
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        .container {
+            position: relative; z-index: 1;
+            width: 90%; max-width: 500px;
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(25px);
+            border-radius: 24px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            animation: slideIn 0.5s ease-out;
+            text-align: center;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes shake {
+            0%,100%{transform:translateX(0)} 20%{transform:translateX(-10px)}
+            40%{transform:translateX(10px)} 60%{transform:translateX(-6px)}
+            80%{transform:translateX(6px)}
+        }
+        @keyframes celebrate {
+            0%{transform:scale(1)} 50%{transform:scale(1.1)} 100%{transform:scale(1)}
+        }
+        @keyframes popIn {
+            0%{transform:scale(0) rotate(-30deg); opacity:0}
+            60%{transform:scale(1.2) rotate(5deg); opacity:1}
+            100%{transform:scale(1) rotate(0deg); opacity:1}
+        }
+        @keyframes pulse {
+            0%,100%{box-shadow:0 0 0 0 rgba(255,217,61,0.6)}
+            50%{box-shadow:0 0 0 25px rgba(255,217,61,0)}
+        }
+
+        .header h1 {
+            font-size: 2rem; font-weight: 900;
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 4s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%,100%{background-position:0% 50%} 50%{background-position:100% 50%}
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* Marcador */
+        .scoreboard {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .score-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 12px 20px;
+            border: 1px solid rgba(255,255,255,0.08);
+            min-width: 80px;
+        }
+        .score-card .value {
+            font-size: 2rem; font-weight: 900; color: #ffd93d;
+        }
+        .score-card .label {
+            font-size: 0.7rem; color: rgba(255,255,255,0.4);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .score-card.you { border-color: rgba(77,150,255,0.4); }
+        .score-card.pc  { border-color: rgba(255,107,107,0.4); }
+
+        /* Arena de batalla */
+        .arena {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .fighter {
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
+        }
+        .fighter .emoji {
+            font-size: 4.5rem;
+            display: block;
+            transition: all 0.3s ease;
+            animation: popIn 0.5s ease;
+        }
+        .fighter .name {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            letter-spacing: 1px;
+        }
+        .vs {
+            font-size: 2rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.2);
+        }
+
+        /* Opciones */
+        .options {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .option-btn {
+            width: 90px; height: 90px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.06);
+            cursor: pointer;
+            font-size: 2.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .option-btn:hover {
+            transform: translateY(-6px);
+            border-color: #ffd93d;
+            background: rgba(255,217,61,0.1);
+            box-shadow: 0 10px 30px rgba(255,217,61,0.25);
+        }
+        .option-btn:active {
+            transform: scale(0.9);
+        }
+        .option-btn.selected {
+            border-color: #ffd93d;
+            background: rgba(255,217,61,0.2);
+            animation: pulse 1.5s ease infinite;
+        }
+        .option-btn .label {
+            display: none;
+        }
+
+        /* Resultado */
+        .result-banner {
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            min-height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .result-banner.win {
+            background: rgba(107,203,119,0.2); color: #6bcb77;
+            animation: celebrate 0.6s ease;
+        }
+        .result-banner.lose {
+            background: rgba(255,107,107,0.2); color: #ff6b6b;
+            animation: shake 0.5s ease;
+        }
+        .result-banner.tie {
+            background: rgba(255,217,61,0.15); color: #ffd93d;
+        }
+
+        /* Botón reset */
+        .reset-btn {
+            margin-top: 10px;
+            padding: 12px 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.6);
+            transition: all 0.3s ease;
+        }
+        .reset-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* Modal de ganador */
+        .winner-overlay {
+            display: none;
+            position: fixed;
+            top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+        }
+        .winner-overlay.show {
+            display: flex;
+        }
+        .winner-modal {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 24px;
+            padding: 35px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.15);
+            animation: popIn 0.5s ease;
+            max-width: 350px;
+            width: 90%;
+        }
+        .winner-modal .trophy {
+            font-size: 6rem;
+            animation: celebrate 1s ease infinite;
+        }
+        .winner-modal h2 {
+            color: #ffd93d;
+            font-size: 1.8rem;
+            margin: 10px 0;
+        }
+        .winner-modal .stats {
+            color: rgba(255,255,255,0.6);
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .winner-modal button {
+            padding: 14px 35px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6bcb77, #4d96ff);
+            color: #fff;
+            transition: all 0.3s;
+        }
+        .winner-modal button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(77,150,255,0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .container { padding: 20px 12px; }
+            .header h1 { font-size: 1.4rem; }
+            .fighter .emoji { font-size: 3rem; }
+            .option-btn { width: 70px; height: 70px; font-size: 2rem; border-radius: 16px; }
+            .score-card { padding: 8px 12px; min-width: 60px; }
+            .score-card .value { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="particles" id="particles"></div>
+
+    <div class="container" id="container">
+        <div class="header">
+            <h1>🥊 PIEDRA, PAPEL O TIJERA</h1>
+        </div>
+        <div class="subtitle">¡Al mejor de 5! Primero en llegar a 3 gana 🏆</div>
+
+        <!-- Marcador -->
+        <div class="scoreboard">
+            <div class="score-card you">
+                <div class="value" id="score-you">0</div>
+                <div class="label">Tú 😎</div>
+            </div>
+            <div class="score-card">
+                <div class="value" id="score-ties">0</div>
+                <div class="label">Empates</div>
+            </div>
+            <div class="score-card pc">
+                <div class="value" id="score-pc">0</div>
+                <div class="label">PC 🤖</div>
+            </div>
+        </div>
+
+        <!-- Arena -->
+        <div class="arena">
+            <div class="fighter">
+                <span class="emoji" id="emoji-you">😎</span>
+                <div class="name">TÚ</div>
+            </div>
+            <div class="vs">VS</div>
+            <div class="fighter">
+                <span class="emoji" id="emoji-pc">🤖</span>
+                <div class="name">PC</div>
+            </div>
+        </div>
+
+        <!-- Resultado -->
+        <div class="result-banner" id="result-banner">¡Elige tu arma, ñero! ⚔️</div>
+
+        <!-- Botones -->
+        <div class="options">
+            <button class="option-btn" data-choice="piedra" title="Piedra">
+                🪨
+            </button>
+            <button class="option-btn" data-choice="papel" title="Papel">
+                📄
+            </button>
+            <button class="option-btn" data-choice="tijera" title="Tijera">
+                ✂️
+            </button>
+        </div>
+
+        <button class="reset-btn" id="reset-btn">🔄 Reiniciar juego</button>
+    </div>
+
+    <!-- Modal ganador -->
+    <div class="winner-overlay" id="winner-overlay">
+        <div class="winner-modal">
+            <div class="trophy" id="trophy-icon">🏆</div>
+            <h2 id="winner-text"></h2>
+            <div class="stats" id="winner-stats"></div>
+            <button id="play-again-btn">🔄 JUGAR OTRA VEZ</button>
+        </div>
+    </div>
+
+    <script>
+        /* ═══════════════════════════════ */
+        /* 🔊 SONIDOS                     */
+        /* ═══════════════════════════════ */
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        function initAudio() { if (!audioCtx) audioCtx = new AudioCtx(); }
+        function beep(f, d, t='sine', v=0.12) {
+            if(!audioCtx) return;
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type=t; o.frequency.setValueAtTime(f,audioCtx.currentTime);
+            g.gain.setValueAtTime(v,audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+d);
+            o.connect(g); g.connect(audioCtx.destination);
+            o.start(); o.stop(audioCtx.currentTime+d);
+        }
+        function sfxSelect()  { beep(660,0.08,'sine',0.1); }
+        function sfxWin()     { beep(523,0.1); setTimeout(()=>beep(784,0.2),120); }
+        function sfxLose()    { beep(200,0.2,'sawtooth',0.08); }
+        function sfxTie()     { beep(440,0.15,'triangle',0.08); }
+        function sfxVictory() {
+            [523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,0.25,'sine',0.18),i*150));
+        }
+
+        /* ═══════════════════════════════ */
+        /* 🎮 LÓGICA                      */
+        /* ═══════════════════════════════ */
+        const OPCIONES = ['piedra', 'papel', 'tijera'];
+        const EMOJIS = { piedra: '🪨', papel: '📄', tijera: '✂️' };
+
+        let scoreYou = 0, scorePc = 0, scoreTies = 0;
+        let gameOver = false;
+
+        // DOM
+        const elScoreYou = document.getElementById('score-you');
+        const elScorePc = document.getElementById('score-pc');
+        const elScoreTies = document.getElementById('score-ties');
+        const elEmojiYou = document.getElementById('emoji-you');
+        const elEmojiPc = document.getElementById('emoji-pc');
+        const elBanner = document.getElementById('result-banner');
+        const elOverlay = document.getElementById('winner-overlay');
+        const elTrophy = document.getElementById('trophy-icon');
+        const elWinnerText = document.getElementById('winner-text');
+        const elWinnerStats = document.getElementById('winner-stats');
+        const elContainer = document.getElementById('container');
+        const btns = document.querySelectorAll('.option-btn');
+
+        function elegirPC() {
+            return OPCIONES[Math.floor(Math.random() * 3)];
+        }
+
+        function determinarGanador(you, pc) {
+            if (you === pc) return 'empate';
+            if ((you==='piedra' && pc==='tijera') ||
+                (you==='papel' && pc==='piedra') ||
+                (you==='tijera' && pc==='papel')) return 'ganas';
+            return 'pierdes';
+        }
+
+        function jugar(eleccionJugador) {
+            if (gameOver) return;
+            initAudio();
+            sfxSelect();
+
+            // Marcar botón seleccionado
+            btns.forEach(b => b.classList.remove('selected'));
+            const btnSeleccionado = document.querySelector(`[data-choice="${eleccionJugador}"]`);
+            if (btnSeleccionado) btnSeleccionado.classList.add('selected');
+
+            const eleccionPC = elegirPC();
+            const resultado = determinarGanador(eleccionJugador, eleccionPC);
+
+            // Animar emojis
+            elEmojiYou.textContent = EMOJIS[eleccionJugador];
+            elEmojiPc.textContent = EMOJIS[eleccionPC];
+            elEmojiYou.style.animation = 'none';
+            elEmojiPc.style.animation = 'none';
+            elEmojiYou.offsetHeight; elEmojiPc.offsetHeight;
+            elEmojiYou.style.animation = 'popIn 0.4s ease';
+            elEmojiPc.style.animation = 'popIn 0.4s ease';
+
+            // Actualizar scores
+            if (resultado === 'ganas') {
+                scoreYou++;
+                elBanner.textContent = '✅ ¡Ganaste esta ronda, ñero! 💬';
+                elBanner.className = 'result-banner win';
+                sfxWin();
+            } else if (resultado === 'pierdes') {
+                scorePc++;
+                elBanner.textContent = '❌ Perdiste esta ronda... ¡ñesconsolado! 😢';
+                elBanner.className = 'result-banner lose';
+                elContainer.style.animation = 'shake 0.5s ease';
+                setTimeout(() => elContainer.style.animation = '', 500);
+                sfxLose();
+            } else {
+                scoreTies++;
+                elBanner.textContent = '🤝 ¡Empate! Nadie puntúa...';
+                elBanner.className = 'result-banner tie';
+                sfxTie();
+            }
+
+            // Actualizar UI
+            elScoreYou.textContent = scoreYou;
+            elScorePc.textContent = scorePc;
+            elScoreTies.textContent = scoreTies;
+
+            // Verificar si alguien ganó el torneo
+            if (scoreYou >= 3) {
+                gameOver = true;
+                setTimeout(mostrarVictoria, 800);
+            } else if (scorePc >= 3) {
+                gameOver = true;
+                setTimeout(mostrarDerrota, 800);
+            }
+
+            // Quitar selección después de un rato
+            setTimeout(() => {
+                btns.forEach(b => b.classList.remove('selected'));
+            }, 1200);
+        }
+
+        function mostrarVictoria() {
+            sfxVictory();
+            elTrophy.textContent = '🏆';
+            elWinnerText.textContent = '¡GANASTE, ÑERO!';
+            elWinnerText.style.color = '#ffd93d';
+            elWinnerStats.textContent = `Tú: ${scoreYou} | PC: ${scorePc} | Empates: ${scoreTies}`;
+            elOverlay.classList.add('show');
+        }
+
+        function mostrarDerrota() {
+            sfxLose();
+            elTrophy.textContent = '😢';
+            elWinnerText.textContent = '¡La PC te ganó!';
+            elWinnerText.style.color = '#ff6b6b';
+            elWinnerStats.textContent = `Tú: ${scoreYou} | PC: ${scorePc} | Empates: ${scoreTies}\n¡Ñesconsolado, bendiciones!`;
+            elOverlay.classList.add('show');
+        }
+
+        function reiniciar() {
+            initAudio();
+            scoreYou = 0; scorePc = 0; scoreTies = 0;
+            gameOver = false;
+            elScoreYou.textContent = '0';
+            elScorePc.textContent = '0';
+            elScoreTies.textContent = '0';
+            elEmojiYou.textContent = '😎';
+            elEmojiPc.textContent = '🤖';
+            elBanner.textContent = '¡Elige tu arma, ñero! ⚔️';
+            elBanner.className = 'result-banner';
+            elOverlay.classList.remove('show');
+            btns.forEach(b => b.classList.remove('selected'));
+            elContainer.style.animation = 'slideIn 0.5s ease';
+        }
+
+        // Event listeners
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => jugar(btn.dataset.choice));
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', reiniciar);
+        document.getElementById('play-again-btn').addEventListener('click', reiniciar);
+
+        // Teclas: 1=Piedra, 2=Papel, 3=Tijera
+        document.addEventListener('keydown', e => {
+            if (gameOver) return;
+            if (e.key === '1') jugar('piedra');
+            if (e.key === '2') jugar('papel');
+            if (e.key === '3') jugar('tijera');
+        });
+
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('keypress', initAudio, { once: true });
+
+        /* ═══════════════════════════════ */
+        /* ✨ PARTÍCULAS                  */
+        /* ═══════════════════════════════ */
+        (function crearParticulas() {
+            const c = document.getElementById('particles');
+            for(let i=0; i<25; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                const s = Math.random()*4+2;
+                p.style.width=s+'px'; p.style.height=s+'px';
+                p.style.left=Math.random()*100+'%';
+                p.style.animationDuration=Math.random()*8+6+'s';
+                p.style.animationDelay=Math.random()*8+'s';
+                c.appendChild(p);
+            }
+        })();
+    </script>
+</body>
+</html>
