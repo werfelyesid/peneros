@@ -1,0 +1,55 @@
+{
+    // Desactivar TODO autocompletado automático para poder estudiar
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false
+    },
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.parameterHints.enabled": false,
+    "editor.autoClosingBrackets": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.autoSurround": "never",
+    "editor.snippetSuggestions": "none",
+    "editor.wordBasedSuggestions": "off",
+    "editor.inlineSuggest.enabled": false,
+    "editor.suggest.showKeywords": false,
+    "editor.suggest.showSnippets": false,
+    "editor.suggest.showWords": false,
+    "editor.suggest.showClasses": false,
+    "editor.suggest.showFunctions": false,
+    "editor.suggest.showMethods": false,
+    "editor.suggest.showVariables": false,
+    "editor.suggest.showFields": false,
+    "editor.suggest.showConstants": false,
+    "editor.suggest.showProperties": false,
+    "editor.suggest.showConstructors": false,
+    "editor.suggest.showModules": false,
+    "editor.suggest.showReferences": false,
+    "editor.suggest.showValues": false,
+    "editor.suggest.showOperators": false,
+    "editor.suggest.showUnits": false,
+    "editor.suggest.showColors": false,
+    "editor.suggest.showFiles": false,
+    "editor.suggest.showFolders": false,
+    "editor.suggest.showTypeParameters": false,
+    "editor.suggest.showEnums": false,
+    "editor.suggest.showInterfaces": false,
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.tabCompletion": "off",
+    "[python]": {
+        "editor.quickSuggestions": {
+            "other": false,
+            "comments": false,
+            "strings": false
+        },
+        "editor.suggestOnTriggerCharacters": false,
+        "editor.parameterHints.enabled": false,
+        "editor.autoClosingBrackets": "never",
+        "editor.autoClosingQuotes": "never",
+        "editor.snippetSuggestions": "none",
+        "editor.wordBasedSuggestions": "off",
+        "editor.inlineSuggest.enabled": false
+    }
+}
